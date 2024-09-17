@@ -1,0 +1,10 @@
+query GetMemesQuery {
+	getMemes(skip: 0, take: 1000) {
+		createdAt
+		from
+		id
+		imageUrl
+		name
+		type
+	}
+}

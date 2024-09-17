@@ -8,6 +8,15 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	export type Meme = {
+		id: string;
+		name: string;
+		imageUrl: string;
+		createdAt: Date;
+		from: string;
+		type: string;
+	};
 }
 
 export {};

@@ -1,0 +1,38 @@
+"""
+Indicates exactly one field must be supplied and this field must not be `null`.
+"""
+directive @oneOf on INPUT_OBJECT
+
+directive @upper on FIELD_DEFINITION
+
+"""Date custom scalar type"""
+scalar Date
+
+"""meme"""
+type Meme {
+  createdAt: Date
+  from: String
+  id: ID!
+  imageUrl: String
+  name: String!
+  type: String
+}
+
+type Mutation {
+  addMeme(newExampleData: NewMemeInput!): Meme!
+  removeMeme(id: String!): Boolean!
+}
+
+input NewMemeInput {
+  imageUrl: String
+  name: String!
+}
+
+type Query {
+  getMeme(id: String!): Meme!
+  getMemes(skip: Int! = 0, take: Int! = 25): [Meme!]!
+}
+
+type Subscription {
+  memeAdded: Meme!
+}
