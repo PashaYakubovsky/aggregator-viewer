@@ -1,9 +1,10 @@
+import { PUBLIC_REST_URL } from '$env/static/public';
 import { refreshToken, token } from '../stores/auth';
 import fs from 'fs';
 
 export async function login(username: string, password: string) {
 	try {
-		const response = await fetch('http://localhost:3000/auth/login', {
+		const response = await fetch(`${PUBLIC_REST_URL}/auth/login`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

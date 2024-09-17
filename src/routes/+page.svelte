@@ -72,8 +72,30 @@
 				if (minCreatedAt && maxCreatedAt) {
 					timeRangeStart = dayjs(minCreatedAt).subtract(5, 'm').valueOf();
 					timeRangeEnd = dayjs(maxCreatedAt).add(5, 'm').valueOf();
-					timeStep = (timeRangeEnd - timeRangeStart) / listOfMemes.length;
+
+					// timeStep = (timeRangeEnd - timeRangeStart) / listOfMemes.length;
+					// itemCount = Math.min(1000, Math.round((timeRangeEnd - timeRangeStart) / timeStep));
+
+					// min range is week
+					const weekMs = 1000 * 60 * 60 * 24 * 7;
+					const diff = maxCreatedAt - minCreatedAt;
+					if (diff < weekMs) {
+						timeRangeStart = dayjs(minCreatedAt).subtract(0.5, 'w').valueOf();
+						timeRangeEnd = dayjs(maxCreatedAt).add(0.5, 'w').valueOf();
+					}
+					timeStep = 5_000;
 					itemCount = Math.round((timeRangeEnd - timeRangeStart) / timeStep);
+
+					console.log(
+						'timeStep',
+						timeStep,
+						'itemCount',
+						itemCount,
+						'timeRangeStart',
+						timeRangeStart,
+						'timeRangeEnd',
+						timeRangeEnd
+					);
 					memes = listOfMemes;
 					selectedItem = memes[0];
 					// initial call for virtual list
