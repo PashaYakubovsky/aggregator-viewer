@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
-	import type { GetMemesQueryStore } from '$houdini';
+	import type { getAggregationsQueryStore } from '$houdini';
 	import dayjs from 'dayjs';
 	import gsap from 'gsap';
 	import { Observer } from 'gsap/all';
@@ -41,14 +41,14 @@
 	/* @type { import('./$houdini').PageData } */
 	export let data;
 
-	let queryStore: GetMemesQueryStore | undefined;
+	let queryStore: getAggregationsQueryStore | undefined;
 	let memes: Meme[] = [];
 
 	$: if (data && !selectedItem) {
 		const init = async () => {
-			const { GetMemesQuery } = data as import('./$houdini').PageData;
-			queryStore = GetMemesQuery;
-			let listOfMemes = $queryStore?.data?.getMemes as unknown as Meme[];
+			const { getAggregationsQuery } = data as import('./$houdini').PageData;
+			queryStore = getAggregationsQuery;
+			let listOfMemes = $queryStore?.data?.getAggregations as unknown as Meme[];
 			listOfMemes.sort((a, b) => dayjs(a.createdAt).valueOf() - dayjs(b.createdAt).valueOf());
 
 			if (listOfMemes) {

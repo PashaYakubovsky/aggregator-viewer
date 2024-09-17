@@ -1,5 +1,5 @@
-query GetMemesQuery {
-	getMemes(skip: 0, take: 1000) {
+query getAggregationsQuery {
+	getAggregations(skip: 0, take: 1000) {
 		createdAt
 		from
 		id
