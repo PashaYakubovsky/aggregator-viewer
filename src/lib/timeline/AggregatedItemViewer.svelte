@@ -1,7 +1,12 @@
 <script lang="ts">
-	export let selectedItem: Meme;
+	export let selectedItem: Meme | null;
 	let isImgLoaded = false;
 	let isImgError = false;
+
+	$: {
+		isImgLoaded = false;
+		isImgError = false;
+	}
 </script>
 
 <div class="aggregated-item">

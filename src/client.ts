@@ -10,7 +10,6 @@ export default new HoudiniClient({
 
 	fetchParams: () => {
 		let currentToken = get(token);
-		console.log('Current token:', currentToken);
 
 		if (browser && !currentToken) {
 			const token = localStorage.getItem('token');

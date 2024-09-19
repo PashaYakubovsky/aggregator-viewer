@@ -44,68 +44,80 @@
 	let queryStore: getAggregationsQueryStore | undefined;
 	let memes: Meme[] = [];
 
-	$: if (data && !selectedItem) {
-		const init = async () => {
-			const { getAggregationsQuery } = data as import('./$houdini').PageData;
-			queryStore = getAggregationsQuery;
-			let listOfMemes = $queryStore?.data?.getAggregations as unknown as Meme[];
-			listOfMemes.sort((a, b) => dayjs(a.createdAt).valueOf() - dayjs(b.createdAt).valueOf());
+	onMount(() => {
+		if (data && !selectedItem) {
+			const init = async () => {
+				const { getAggregationsQuery } = data as import('./$houdini').PageData;
+				queryStore = getAggregationsQuery;
+				let listOfMemes = $queryStore?.data?.getAggregations as unknown as Meme[];
+				listOfMemes.sort((a, b) => dayjs(a.createdAt).valueOf() - dayjs(b.createdAt).valueOf());
 
-			if (listOfMemes) {
-				let minCreatedAt: number = 0;
-				let maxCreatedAt: number = 0;
-				for (let i = 0; i < listOfMemes.length; i++) {
-					const meme = listOfMemes[i];
-					const createdAt = dayjs(meme.createdAt).valueOf();
-					if (i === 0) {
-						minCreatedAt = createdAt;
-						maxCreatedAt = createdAt;
+				if (listOfMemes) {
+					let minCreatedAt: number = 0;
+					let maxCreatedAt: number = 0;
+					for (let i = 0; i < listOfMemes.length; i++) {
+						const meme = listOfMemes[i];
+						const createdAt = dayjs(meme.createdAt).valueOf();
+						if (i === 0) {
+							minCreatedAt = createdAt;
+							maxCreatedAt = createdAt;
+						}
+						if (createdAt < minCreatedAt) {
+							minCreatedAt = createdAt;
+						}
+						if (createdAt > maxCreatedAt) {
+							maxCreatedAt = createdAt;
+						}
+						meme.createdAt = new Date(createdAt);
 					}
-					if (createdAt < minCreatedAt) {
-						minCreatedAt = createdAt;
+					if (minCreatedAt && maxCreatedAt) {
+						timeRangeStart = dayjs(minCreatedAt).subtract(5, 'm').valueOf();
+						timeRangeEnd = dayjs(maxCreatedAt).add(5, 'm').valueOf();
+
+						// timeStep = (timeRangeEnd - timeRangeStart) / listOfMemes.length;
+						// itemCount = Math.min(1000, Math.round((timeRangeEnd - timeRangeStart) / timeStep));
+
+						const dayMs = 1000 * 60 * 60 * 24;
+						const diff = maxCreatedAt - minCreatedAt;
+						if (diff < dayMs) {
+							timeRangeStart = dayjs(minCreatedAt).subtract(4, 'h').valueOf();
+							timeRangeEnd = dayjs(maxCreatedAt).add(4, 'h').valueOf();
+						}
+						timeStep = 5_000;
+						itemCount = Math.round((timeRangeEnd - timeRangeStart) / timeStep);
+
+						console.log(
+							'timeStep',
+							timeStep,
+							'itemCount',
+							itemCount,
+							'timeRangeStart',
+							timeRangeStart,
+							'timeRangeEnd',
+							timeRangeEnd
+						);
+						memes = listOfMemes;
+						// initial call for virtual list
+						handleAfterScroll({ detail: { offset: 0 } });
+						// update markers container style
+						markerItemsContainerStyle = `width: ${ITEM_SIZE * itemCount}px; position: absolute; height: 2rem; top: 0; left: 0;`;
+						// scroll to first aggr item
+						const virtualList = document.querySelector('.virtual-list-wrapper');
+
+						if (virtualList) {
+							// scroll to middle
+							setTimeout(() => {
+								virtualList.scrollLeft = (ITEM_SIZE * itemCount) / 2;
+								selectedItem = memes[Math.round(memes.length / 2)];
+							}, 1000);
+						}
 					}
-					if (createdAt > maxCreatedAt) {
-						maxCreatedAt = createdAt;
-					}
-					meme.createdAt = new Date(createdAt);
 				}
-				if (minCreatedAt && maxCreatedAt) {
-					timeRangeStart = dayjs(minCreatedAt).subtract(5, 'm').valueOf();
-					timeRangeEnd = dayjs(maxCreatedAt).add(5, 'm').valueOf();
+			};
 
-					// timeStep = (timeRangeEnd - timeRangeStart) / listOfMemes.length;
-					// itemCount = Math.min(1000, Math.round((timeRangeEnd - timeRangeStart) / timeStep));
-
-					// min range is week
-					const weekMs = 1000 * 60 * 60 * 24 * 7;
-					const diff = maxCreatedAt - minCreatedAt;
-					if (diff < weekMs) {
-						timeRangeStart = dayjs(minCreatedAt).subtract(0.5, 'w').valueOf();
-						timeRangeEnd = dayjs(maxCreatedAt).add(0.5, 'w').valueOf();
-					}
-					timeStep = 5_000;
-					itemCount = Math.round((timeRangeEnd - timeRangeStart) / timeStep);
-
-					console.log(
-						'timeStep',
-						timeStep,
-						'itemCount',
-						itemCount,
-						'timeRangeStart',
-						timeRangeStart,
-						'timeRangeEnd',
-						timeRangeEnd
-					);
-					memes = listOfMemes;
-					selectedItem = memes[0];
-					// initial call for virtual list
-					handleAfterScroll({ detail: { offset: 0 } });
-				}
-			}
-		};
-
-		init();
-	}
+			init();
+		}
+	});
 
 	onMount(() => {
 		if (!browser) return;
@@ -183,6 +195,31 @@
 
 	const handleZoom = (direction: 'in' | 'out') => {
 		const zoomAmount = 1000 * 60 * 5;
+
+		const tTimeStep = timeStep * (direction === 'in' ? 0.5 : 2);
+		const tItemCount = Math.round((timeRangeEnd - timeRangeStart) / tTimeStep);
+
+		const maxRenderedItems = 1_000_000;
+		if (tTimeStep * tItemCount > maxRenderedItems) {
+			return;
+		}
+
+		timeStep *= direction === 'in' ? 0.5 : 2;
+		itemCount = Math.round((timeRangeEnd - timeRangeStart) / timeStep);
+
+		const centerOffset = (ITEM_SIZE * itemCount) / 2;
+		const virtualList = document.querySelector('.virtual-list-wrapper');
+		if (virtualList) {
+			setTimeout(() => {
+				virtualList.scrollLeft = centerOffset;
+				const virtualListInner = document.querySelector('.virtual-list-inner');
+				if (virtualListInner) {
+					// resize markers container
+					markerItemsContainerStyle = `width: ${virtualListInner.clientWidth}px; position: absolute; height: 2rem; top: 0; left: 0;`;
+				}
+			}, 100);
+		}
+
 		if (direction === 'in') {
 			timeRangeStart -= zoomAmount;
 			timeRangeEnd += zoomAmount;
@@ -190,15 +227,11 @@
 			timeRangeStart += zoomAmount;
 			timeRangeEnd -= zoomAmount;
 		}
-		timeStep = (timeRangeEnd - timeRangeStart) / memes.length;
-		itemCount = Math.round((timeRangeEnd - timeRangeStart) / timeStep);
-		// resize markers container
-		markerItemsContainerStyle = `width: ${ITEM_SIZE * itemCount}px; position: absolute; height: 2rem; top: 0; left: 0;`;
-		// initial call for virtual list
-		handleAfterScroll({ detail: { offset: 0 } });
 	};
 
+	let isScrolled = false;
 	const handleAfterScroll = (e: { detail: { offset: number } }) => {
+		isScrolled = true;
 		const data = e.detail;
 		const offset = data.offset;
 		const left = offset / ITEM_SIZE;
@@ -225,20 +258,23 @@
 		if (itemMarkersEl) {
 			itemMarkersEl.style.transform = `translateX(-${offset}px)`;
 		}
+
+		isScrolled = false;
 	};
 
 	const handleScrollToMarker = (type: 'next' | 'prev') => {
 		if (!selectedItem) return;
 
-		const index = memes.findIndex((m) => m.id === selectedItem?.id);
+		let index = memes.findIndex((m) => m.id === selectedItem?.id);
 		if (index === -1) return;
+		console.log('index', index);
 
 		let nextMeme = memes[index + 1];
 		if (type === 'prev') {
 			nextMeme = memes[index - 1];
 		}
 		if (nextMeme) {
-			selectedItem = nextMeme;
+			if (!isScrolled) selectedItem = nextMeme;
 			const virtualList = document.querySelector('.virtual-list-wrapper');
 			const markers = document.querySelectorAll('.marker');
 			if (virtualList && markers) {
@@ -312,7 +348,7 @@
 		const result = fuse.search(searchedText);
 		if (result.length > 0) {
 			const meme = result[0].item;
-			selectedItem = meme;
+			if (!isScrolled) selectedItem = meme;
 			const virtualList = document.querySelector('.virtual-list-wrapper');
 			const markers = document.querySelectorAll('.marker');
 			if (virtualList && markers) {
