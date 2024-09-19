@@ -3,10 +3,9 @@ import { HoudiniClient } from '$houdini';
 import { get } from 'svelte/store';
 import { token } from './stores/auth';
 import { browser } from '$app/environment';
-import { PUBLIC_GRAPHQL_URL } from '$env/static/public';
 
 export default new HoudiniClient({
-	url: PUBLIC_GRAPHQL_URL || 'http://localhost:3000/graphql',
+	url: import.meta.env.VITE_PUBLIC_GRAPHQL_URL,
 
 	fetchParams: () => {
 		let currentToken = get(token);

@@ -30,11 +30,20 @@
 	let itemMarkersEl: HTMLDivElement | null = null;
 
 	const sound = new Audio('/clickSound.mp3');
+	let isAudioReady = false;
 
 	function handleResize() {
 		width = window.innerWidth;
-		if (itemMarkersEl) {
-			itemMarkersEl.style.width = `${ITEM_SIZE * itemCount}px`;
+
+		const virtualList = document.querySelector('.virtual-list-wrapper');
+		if (virtualList) {
+			virtualList.scrollLeft = (ITEM_SIZE * itemCount) / 2;
+		}
+
+		const virtualListInner = document.querySelector('.virtual-list-inner');
+		if (virtualListInner && itemMarkersEl) {
+			// resize markers container
+			itemMarkersEl.style.width = `${virtualListInner.clientWidth}px`;
 		}
 	}
 
@@ -117,16 +126,48 @@
 
 			init();
 		}
-	});
 
-	onMount(() => {
 		if (!browser) return;
 
 		handleResize();
 		window.addEventListener('resize', handleResize);
 
+		const handleAudioReady = () => {
+			isAudioReady = true;
+		};
+
+		sound.addEventListener('canplaythrough', handleAudioReady);
+
+		// set up gsap observer
+		gsap.registerPlugin(Observer);
+		const virtualList = document.querySelector('.virtual-list-wrapper');
+		const lerp = (start: number, end: number, t: number) => {
+			return start * (1 - t) + end * t;
+		};
+
+		const observer = Observer.create({
+			target: '.timeline',
+			type: 'wheel,touch,pointer',
+			wheelSpeed: 1,
+			onWheel: (e) => {
+				if (!virtualList) return;
+				const delta = e.deltaX;
+				const offset = virtualList.scrollLeft + delta;
+				virtualList.scrollLeft = lerp(virtualList.scrollLeft, offset, 0.5);
+			},
+			onDrag: (e) => {
+				if (!virtualList) return;
+				const delta = e.deltaX;
+				const offset = virtualList.scrollLeft - delta;
+				virtualList.scrollLeft = lerp(virtualList.scrollLeft, offset, 0.5);
+			},
+			preventDefault: true
+		});
+
 		return () => {
 			window.removeEventListener('resize', handleResize);
+			sound.removeEventListener('canplaythrough', handleAudioReady);
+			observer.kill();
 		};
 	});
 
@@ -199,11 +240,6 @@
 		const tTimeStep = timeStep * (direction === 'in' ? 0.5 : 2);
 		const tItemCount = Math.round((timeRangeEnd - timeRangeStart) / tTimeStep);
 
-		const maxRenderedItems = 1_000_000;
-		if (tTimeStep * tItemCount > maxRenderedItems) {
-			return;
-		}
-
 		timeStep *= direction === 'in' ? 0.5 : 2;
 		itemCount = Math.round((timeRangeEnd - timeRangeStart) / timeStep);
 
@@ -248,9 +284,11 @@
 			return diff < timeStep;
 		});
 
-		if (closestMeme) {
-			sound.currentTime = 0;
-			sound.play();
+		if (closestMeme && closestMeme !== selectedItem) {
+			if (isAudioReady) {
+				sound.play();
+			}
+
 			selectedItem = closestMeme;
 		}
 
@@ -293,38 +331,6 @@
 			}
 		}
 	};
-
-	onMount(() => {
-		if (!browser) return;
-		// set up gsap observer
-
-		gsap.registerPlugin(Observer);
-
-		const virtualList = document.querySelector('.virtual-list-wrapper');
-
-		const lerp = (start: number, end: number, t: number) => {
-			return start * (1 - t) + end * t;
-		};
-
-		Observer.create({
-			target: '.timeline',
-			type: 'wheel,touch,pointer',
-			wheelSpeed: 0.5,
-			onWheel: (e) => {
-				if (!virtualList) return;
-				const delta = e.deltaX;
-				const offset = virtualList.scrollLeft + delta;
-				virtualList.scrollLeft = lerp(virtualList.scrollLeft, offset, 0.5);
-			},
-			onDrag: (e) => {
-				if (!virtualList) return;
-				const delta = e.deltaX;
-				const offset = virtualList.scrollLeft - delta;
-				virtualList.scrollLeft = lerp(virtualList.scrollLeft, offset, 0.5);
-			},
-			preventDefault: true
-		});
-	});
 
 	const fuseOptions = {
 		isCaseSensitive: false,
