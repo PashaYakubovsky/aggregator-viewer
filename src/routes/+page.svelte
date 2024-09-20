@@ -240,7 +240,7 @@
 		const tTimeStep = timeStep * (direction === 'in' ? 0.5 : 2);
 		const tItemCount = Math.round((timeRangeEnd - timeRangeStart) / tTimeStep);
 
-		timeStep *= direction === 'in' ? 0.5 : 2;
+		timeStep *= direction === 'out' ? 0.5 : 2;
 		itemCount = Math.round((timeRangeEnd - timeRangeStart) / timeStep);
 
 		const centerOffset = (ITEM_SIZE * itemCount) / 2;
