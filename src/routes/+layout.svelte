@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { token } from '../stores/auth';
+	import { goto } from '$app/navigation';
 
 	onMount(() => {
 		// get token from /static/token.json
@@ -10,6 +11,14 @@
 				const data = (await res.json()) as { access_token: string };
 				localStorage.setItem('token', data.access_token);
 				token.set(data.access_token);
+				// parse token and check exp date
+				const pToken = JSON.parse(atob(data.access_token.split('.')[1]));
+				const time = Date.now();
+				console.log('Token expires at:', new Date(pToken.exp * 1000));
+				const isNotLoginPage = window.location.pathname !== '/login';
+				if (time >= pToken.exp * 1000 && isNotLoginPage) {
+					goto('/login');
+				}
 			})
 			.catch((err) => {
 				console.error('Error fetching token', err);

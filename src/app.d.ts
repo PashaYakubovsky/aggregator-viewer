@@ -9,7 +9,7 @@ declare global {
 		// interface Platform {}
 	}
 
-	export type Meme = {
+	export type Aggregation = {
 		id: string;
 		name: string;
 		imageUrl: string;

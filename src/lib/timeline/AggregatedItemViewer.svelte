@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let selectedItem: Meme | null;
+	export let selectedItem: Aggregation | null;
 	let isImgLoaded = false;
 	let isImgError = false;
 
@@ -22,7 +22,8 @@
 				on:load={() => {
 					isImgLoaded = true;
 				}}
-				on:error={() => {
+				on:error={(err) => {
+					console.error(err);
 					isImgError = true;
 				}}
 				class="aggregated-item__inner-img"

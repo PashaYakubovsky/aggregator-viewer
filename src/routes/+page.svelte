@@ -24,7 +24,7 @@
 	let rightViewportTime = 0;
 	let middleViewportTime = 0;
 	let markerItemsContainerStyle = `width: ${ITEM_SIZE * itemCount}px; position: absolute; height: 2rem; top: 0; left: 0;`;
-	let selectedItem: Meme | null = null;
+	let selectedItem: Aggregation | null = null;
 
 	let timelineTooltip: HTMLDivElement | null = null;
 	let itemMarkersEl: HTMLDivElement | null = null;
@@ -51,14 +51,14 @@
 	export let data;
 
 	let queryStore: getAggregationsQueryStore | undefined;
-	let memes: Meme[] = [];
+	let memes: Aggregation[] = [];
 
 	onMount(() => {
 		if (data && !selectedItem) {
 			const init = async () => {
 				const { getAggregationsQuery } = data as import('./$houdini').PageData;
 				queryStore = getAggregationsQuery;
-				let listOfMemes = $queryStore?.data?.getAggregations as unknown as Meme[];
+				let listOfMemes = $queryStore?.data?.getAggregations as unknown as Aggregation[];
 				listOfMemes.sort((a, b) => dayjs(a.createdAt).valueOf() - dayjs(b.createdAt).valueOf());
 
 				if (listOfMemes) {

@@ -3,6 +3,8 @@ import { HoudiniClient } from '$houdini';
 import { get } from 'svelte/store';
 import { token } from './stores/auth';
 import { browser } from '$app/environment';
+import { subscription } from '$houdini/plugins';
+import { createClient } from 'graphql-ws';
 
 export default new HoudiniClient({
 	url: import.meta.env.VITE_PUBLIC_GRAPHQL_URL,
@@ -22,7 +24,6 @@ export default new HoudiniClient({
 			headers['Authorization'] = `Bearer ${currentToken}`;
 		}
 
-		console.log('Current auth headers:', headers);
 		return { headers };
 	},
 
@@ -34,5 +35,19 @@ export default new HoudiniClient({
 		error: (errors, ctx) => {
 			console.error('Request failed:', errors);
 		}
-	}
+	},
+	plugins: [
+		subscription(() =>
+			createClient({
+				shouldRetry: () => true,
+				retryAttempts: 5,
+				url: import.meta.env.VITE_PUBLIC_GRAPHQL_WS_URL,
+				on: {
+					connected: () => console.log('WebSocket connected'),
+					closed: () => console.log('WebSocket closed'),
+					error: (error) => console.error('WebSocket error:', error)
+				}
+			})
+		)
+	]
 });

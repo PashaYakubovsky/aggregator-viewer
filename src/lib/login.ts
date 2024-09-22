@@ -20,11 +20,14 @@ export async function login(username: string, password: string) {
 			// create json file and safe in public directory
 			const json = JSON.stringify(data);
 			fs.writeFileSync('static/token.json', json);
+			return data;
 		} else {
 			// Handle login error
 			console.error('Login failed:', data.message);
+			return Promise.reject(data.message);
 		}
 	} catch (error) {
 		console.error('Failed to refresh token:', error);
+		return Promise.reject(error);
 	}
 }
