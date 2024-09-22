@@ -2,4 +2,8 @@
 
 import { login } from '$lib/login';
 
-login('admin', 'admin');
+try {
+	login('admin', 'admin');
+} catch (error) {
+	console.error('Failed to login:', error);
+}

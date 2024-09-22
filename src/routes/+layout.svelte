@@ -6,6 +6,7 @@
 	onMount(() => {
 		// get token from /static/token.json
 		// if token is not available, redirect to login page
+
 		fetch('/token.json')
 			.then(async (res) => {
 				const data = (await res.json()) as { access_token: string };
