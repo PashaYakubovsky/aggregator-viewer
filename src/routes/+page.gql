@@ -1,6 +1,7 @@
 query getAggregationsQuery {
 	getAggregations(skip: 0, take: 1000) {
 		createdAt
+		createdAtTime
 		from
 		id
 		imageUrl

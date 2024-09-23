@@ -1,18 +1,29 @@
 <script lang="ts">
-	export let meme: Meme;
+	import dayjs from 'dayjs';
+
+	export let aggr: Aggregation;
 	export let timeRangeStart: number;
 	export let timeRangeEnd: number;
+	export let handleClick: (e: MouseEvent, aggr: Aggregation) => void;
+	let markerEl: HTMLButtonElement;
 
-	let leftPx = 0;
-
-	$: leftPx = ((meme.createdAt.getTime() - timeRangeStart) / (timeRangeEnd - timeRangeStart)) * 100;
+	$: if (markerEl) {
+		markerEl.style.left = `${((aggr.createdAt.getTime() - timeRangeStart) / (timeRangeEnd - timeRangeStart)) * 100}%`;
+	}
 </script>
 
-<button style="left: {leftPx}%" class="marker-inner"></button>
+<button
+	tabindex="-1"
+	on:click={(e) => handleClick(e, aggr)}
+	title={dayjs(aggr.createdAtTime * 1000).format('YYYY MMM DD HH:mm:ss')}
+	bind:this={markerEl}
+	class="marker-inner"
+></button>
 
 <style>
 	.marker-inner {
 		height: 100%;
+		min-height: 2rem;
 		width: 0.25rem;
 		transition: background-color 0.3s;
 		position: absolute;

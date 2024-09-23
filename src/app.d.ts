@@ -16,6 +16,7 @@ declare global {
 		createdAt: Date;
 		from: string;
 		type: string;
+		createdAtTime: number;
 	};
 }
 

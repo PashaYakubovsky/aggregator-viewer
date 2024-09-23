@@ -17,6 +17,7 @@
 
 	const handleSearch = () => {
 		searchOpen = !searchOpen;
+		search(searchedText);
 	};
 </script>
 

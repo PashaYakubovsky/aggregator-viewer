@@ -1,51 +1,50 @@
 <script lang="ts">
-	export let selectedItem: Aggregation | null;
+	import { onMount } from 'svelte';
+	import { timelineStore } from '../../stores/timeline.store';
+
 	let isImgLoaded = false;
 	let isImgError = false;
+	// $: selectedItem = $timelineStore.selectedItem;
+	export let selectedItem: Aggregation | null;
 
 	$: {
 		isImgLoaded = false;
 		isImgError = false;
 	}
+
+	function handleImageLoad() {
+		isImgLoaded = true;
+	}
+
+	function handleImageError(err: Event) {
+		console.error(err);
+		isImgError = true;
+	}
 </script>
 
 <div class="aggregated-item">
 	{#if selectedItem}
-		<div class="aggregated-item__inner-title">{selectedItem.name}</div>
-
-		{#if isImgError}
-			<div class="aggregated-item__error">Error loading image</div>
-		{/if}
+		<div class="aggregated-item__inner-title">{selectedItem}</div>
 
 		{#if selectedItem.imageUrl && !isImgError}
 			<img
-				on:load={() => {
-					isImgLoaded = true;
-				}}
-				on:error={(err) => {
-					console.error(err);
-					isImgError = true;
-				}}
+				on:load={handleImageLoad}
+				on:error={handleImageError}
 				class="aggregated-item__inner-img"
 				src={selectedItem.imageUrl}
 				alt={selectedItem.name}
 			/>
 		{/if}
 
-		{#if !isImgLoaded}
+		{#if isImgError}
+			<div class="aggregated-item__error">Error loading image</div>
+		{:else if !isImgLoaded}
 			<div class="aggregated-item__loading">Loading...</div>
 		{/if}
 	{/if}
 </div>
 
 <style>
-	.aggregated-item__error {
-		position: absolute;
-		bottom: 0;
-		left: 50%;
-		transform: translateX(-50%);
-		color: white;
-	}
 	.aggregated-item {
 		max-height: calc(100svh - 16rem);
 		width: 100%;
@@ -72,6 +71,7 @@
 		height: auto;
 		object-fit: contain;
 	}
+	.aggregated-item__error,
 	.aggregated-item__loading {
 		color: white;
 		position: absolute;

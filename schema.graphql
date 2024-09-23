@@ -8,6 +8,7 @@ directive @upper on FIELD_DEFINITION
 """Aggregated item"""
 type Aggregation {
   createdAt: Date
+  createdAtTime: Float
   from: String
   id: ID!
   imageUrl: String
