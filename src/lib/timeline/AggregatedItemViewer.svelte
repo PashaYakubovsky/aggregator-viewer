@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { timelineStore } from '../../stores/timeline.store';
-
 	let isImgLoaded = false;
 	let isImgError = false;
 	// $: selectedItem = $timelineStore.selectedItem;
@@ -24,7 +21,7 @@
 
 <div class="aggregated-item">
 	{#if selectedItem}
-		<div class="aggregated-item__inner-title">{selectedItem}</div>
+		<div class="aggregated-item__inner-title">{selectedItem.name}</div>
 
 		{#if selectedItem.imageUrl && !isImgError}
 			<img
