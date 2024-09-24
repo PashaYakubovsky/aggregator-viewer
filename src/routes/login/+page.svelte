@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-
 	/** @type {import('./$types').ActionData} */
 	export let form;
 </script>
@@ -22,7 +20,7 @@
 			Password
 			<input name="password" type="password" />
 		</label>
-		<button>Log in</button>
+		<button type="submit">Log in</button>
 	</form>
 </div>
 
