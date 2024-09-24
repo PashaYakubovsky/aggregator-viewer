@@ -1,37 +1,97 @@
 <script lang="ts">
-	/** @type {import('./$types').ActionData} */
-	export let form;
+	import { goto } from '$app/navigation';
+	import { login } from '$lib/login';
+	import { onMount } from 'svelte';
+
+	let form = {
+		name: '',
+		password: '',
+		missing: false,
+		incorrect: false
+	};
+
+	onMount(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				e.stopPropagation();
+				const button = document.querySelector('button');
+				if (button) {
+					button.click();
+				}
+			}
+		};
+
+		document.addEventListener('keypress', handleKeyPress);
+
+		return () => {
+			document.removeEventListener('keypress', handleKeyPress);
+		};
+	});
 </script>
 
 <svelte:head>
 	<title>Login</title>
 </svelte:head>
 
-<div>
-	<form method="POST">
+<div class="container">
+	<div class="form">
 		{#if form?.missing}<p class="error">The name field is required</p>{/if}
 		{#if form?.incorrect}<p class="error">Invalid credentials!</p>{/if}
 
 		<label>
 			User name
-			<input name="name" type="text" value={form?.name ?? ''} />
+			<input
+				required
+				on:input={(e) => {
+					const target = e.currentTarget as HTMLInputElement;
+					form.name = target.value || '';
+					form.missing = false;
+				}}
+				name="name"
+				type="text"
+				value={form?.name ?? ''}
+			/>
 		</label>
 		<label>
 			Password
-			<input name="password" type="password" />
+			<input
+				required
+				on:input={(e) => {
+					const target = e.currentTarget as HTMLInputElement;
+					form.password = target.value || '';
+					form.missing = false;
+				}}
+				name="password"
+				type="password"
+			/>
 		</label>
-		<button type="submit">Log in</button>
-	</form>
+		<button
+			disabled={!form?.name || !form?.password}
+			on:click={async () => {
+				const name = form.name;
+				const password = form.password;
+
+				const token = await login(name, password);
+				if (token) {
+					localStorage.setItem('token', token);
+					goto('/');
+				} else {
+					form.incorrect = true;
+				}
+			}}>Log in</button
+		>
+	</div>
 </div>
 
 <style>
-	div {
+	.container {
 		height: 100svh;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
-	form {
+	.form {
 		display: grid;
 		gap: 1em;
 		max-width: 20em;

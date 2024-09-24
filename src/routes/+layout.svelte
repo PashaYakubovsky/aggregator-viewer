@@ -6,24 +6,23 @@
 	onMount(() => {
 		// get token from /static/token.json
 		// if token is not available, redirect to login page
-
-		fetch('/token.json')
-			.then(async (res) => {
-				const data = (await res.json()) as { access_token: string };
-				localStorage.setItem('token', data.access_token);
-				token.set(data.access_token);
-				// parse token and check exp date
-				const pToken = JSON.parse(atob(data.access_token.split('.')[1]));
-				const time = Date.now();
-				console.log('Token expires at:', new Date(pToken.exp * 1000));
-				const isNotLoginPage = window.location.pathname !== '/login';
-				if (time >= pToken.exp * 1000 && isNotLoginPage) {
-					goto('/login');
-				}
-			})
-			.catch((err) => {
-				console.error('Error fetching token', err);
-			});
+		// fetch('/token.json')
+		// 	.then(async (res) => {
+		// 		const data = (await res.json()) as { access_token: string };
+		// 		localStorage.setItem('token', data.access_token);
+		// 		token.set(data.access_token);
+		// 		// parse token and check exp date
+		// 		const pToken = JSON.parse(atob(data.access_token.split('.')[1]));
+		// 		const time = Date.now();
+		// 		console.log('Token expires at:', new Date(pToken.exp * 1000));
+		// 		const isNotLoginPage = window.location.pathname !== '/login';
+		// 		if (time >= pToken.exp * 1000 && isNotLoginPage) {
+		// 			goto('/login');
+		// 		}
+		// 	})
+		// 	.catch((err) => {
+		// 		console.error('Error fetching token', err);
+		// 	});
 	});
 </script>
 
