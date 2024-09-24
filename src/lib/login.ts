@@ -19,7 +19,11 @@ export async function login(username: string, password: string) {
 
 			// create json file and safe in public directory
 			const json = JSON.stringify(data);
-			fs.writeFileSync('static/token.json', json);
+			if (process.env.NODE_ENV !== 'development') {
+				fs.writeFileSync('public/token.json', json);
+			} else {
+				fs.writeFileSync('static/token.json', json);
+			}
 			return data;
 		} else {
 			// Handle login error
