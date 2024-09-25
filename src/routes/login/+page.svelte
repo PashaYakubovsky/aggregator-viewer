@@ -46,6 +46,15 @@
 			}}
 			type="submit">Log in</button
 		>
+		<button
+			on:click={async (e) => {
+				e.preventDefault();
+				goto('/register');
+			}}
+			type="button"
+		>
+			Register
+		</button>
 	</form>
 </div>
 
