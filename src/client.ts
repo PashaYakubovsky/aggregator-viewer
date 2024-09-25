@@ -9,7 +9,7 @@ import { createClient } from 'graphql-ws';
 export default new HoudiniClient({
 	url: import.meta.env.VITE_PUBLIC_GRAPHQL_URL,
 
-	fetchParams: () => {
+	fetchParams: ({ session }) => {
 		let currentToken = get(token);
 
 		if (browser && !currentToken) {
@@ -46,6 +46,23 @@ export default new HoudiniClient({
 					connected: () => console.log('WebSocket connected'),
 					closed: () => console.log('WebSocket closed'),
 					error: (error) => console.error('WebSocket error:', error)
+				},
+				connectionParams: () => {
+					let currentToken = get(token);
+
+					if (browser && !currentToken) {
+						const token = localStorage.getItem('token');
+						if (token) {
+							currentToken = token;
+						}
+					}
+
+					const headers: Record<string, string> = {};
+					if (currentToken) {
+						headers['Authorization'] = `Bearer ${currentToken}`;
+					}
+
+					return { headers };
 				}
 			})
 		)

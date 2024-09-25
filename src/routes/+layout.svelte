@@ -20,7 +20,7 @@
 			tokenStore.set(token);
 
 			if (time >= pToken.exp * 1000 && isNotLoginPage) {
-				goto('/login');
+				window.location.href = '/login';
 			}
 		} catch (err) {
 			console.error(err);

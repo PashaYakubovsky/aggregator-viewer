@@ -11,7 +11,7 @@
 </svelte:head>
 
 <div>
-	<form method="POST">
+	<form>
 		{#if form?.missing}<p class="error">The name field is required</p>{/if}
 		{#if form?.incorrect}<p class="error">Invalid credentials!</p>{/if}
 
@@ -24,16 +24,24 @@
 			<input name="password" type="password" />
 		</label>
 		<button
-			on:submit={async () => {
-				const name = form.name;
-				const password = form.password;
+			on:click={async (e) => {
+				try {
+					e.preventDefault();
+					// @ts-ignore
+					const name = e.target.form.name.value;
+					// @ts-ignore
+					const password = e.target.form.password.value;
 
-				const token = await login(name, password);
-				if (token) {
-					localStorage.setItem('token', token || '');
-					goto('/');
-				} else {
-					form.incorrect = true;
+					const token = await login(name, password);
+
+					if (token) {
+						localStorage.setItem('token', token || '');
+						goto('/');
+					} else {
+						form.incorrect = true;
+					}
+				} catch (err) {
+					console.error(err);
 				}
 			}}
 			type="submit">Log in</button
