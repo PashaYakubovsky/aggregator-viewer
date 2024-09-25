@@ -57,19 +57,32 @@
 		display: flex;
 		flex-direction: column;
 	}
+	form {
+		display: grid;
+		gap: 1em;
+		max-width: 20em;
+		height: fit-content;
+		margin: 0 auto;
+		color: white;
+		margin: auto;
+	}
 	label {
-		font-size: 1.2rem;
+		display: grid;
+		gap: 0.5em;
 	}
 	input {
-		padding: 0.5rem;
-		font-size: 1rem;
+		padding: 0.5em;
 	}
 	button {
-		padding: 0.5rem;
-		font-size: 1rem;
-		background-color: #007bff;
+		padding: 0.5em;
+		background-color: #333;
 		color: white;
 		border: none;
-		cursor: pointer;
+	}
+	button:hover {
+		background-color: #444;
+	}
+	button:active {
+		background-color: #555;
 	}
 </style>
