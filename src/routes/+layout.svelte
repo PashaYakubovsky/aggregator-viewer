@@ -7,10 +7,13 @@
 
 	onMount(() => {
 		try {
+			const isNotLoginPage = window.location.pathname !== '/login';
 			// check if token is available
 			const token = localStorage.getItem('token') || '';
 			if (!token) {
-				goto('/login');
+				if (isNotLoginPage) window.location.href = '/login';
+				tokenStore.set(token);
+				return;
 			}
 
 			// parse token and check exp date
@@ -18,7 +21,6 @@
 				const pToken = JSON.parse(atob(token.split('.')[1]));
 				const time = Date.now();
 				console.log('Token expires at:', new Date(pToken.exp * 1000));
-				const isNotLoginPage = window.location.pathname !== '/login';
 
 				tokenStore.set(token);
 
@@ -27,7 +29,6 @@
 				}
 			} catch (err) {
 				console.error(err);
-				window.location.href = '/login';
 			}
 		} catch (err) {
 			console.error(err);
@@ -45,7 +46,7 @@
 	<title>Aggregator viewer</title>
 </svelte:head>
 
-{#if $tokenStore}
+{#if $tokenStore || typeof $tokenStore === 'string'}
 	<slot />
 {:else}
 	<p>Redirecting...</p>
