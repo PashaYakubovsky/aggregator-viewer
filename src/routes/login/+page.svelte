@@ -79,7 +79,7 @@
 			<div class="flex items-center justify-between">
 				<button
 					type="submit"
-					class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-950 hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+					class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-950 hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-all"
 					disabled={isLoading}
 				>
 					{#if isLoading}
@@ -113,7 +113,7 @@
 		<div class="mt-2">
 			<button
 				on:click={handleRegister}
-				class="w-full text-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-sky-950 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+				class="w-full text-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-sky-950 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-all"
 			>
 				Create an account
 			</button>

@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
 	import { Loader2 } from 'lucide-svelte';
+	// import { onDestroy, onMount } from 'svelte';
+	// import { browser } from '$app/environment';
+	// import type AggregatedItemViewerScene from './AggregatedItemViewerScene';
 
 	export let selectedItem: Aggregation | null;
 
 	let isImgLoaded = false;
 	let isImgError = false;
+	let canvasEl: HTMLCanvasElement;
 
 	$: {
 		isImgLoaded = false;
@@ -20,11 +24,42 @@
 		console.error(err);
 		isImgError = true;
 	}
+
+	// let scene: AggregatedItemViewerScene;
+	// onMount(() => {
+	// 	const init = async () => {
+	// 		if (browser && canvasEl) {
+	// 			// setup three.js
+	// 			const AIVS = (await import('./AggregatedItemViewerScene.js')).default;
+	// 			console.log('AIVS:', AIVS);
+	// 			const aicontainer = document.getElementById('aggregated-item-viewer-container');
+	// 			if (aicontainer) {
+	// 				canvasEl.height = aicontainer.clientHeight;
+	// 				canvasEl.width = aicontainer.clientWidth;
+	// 			}
+
+	// 			scene = new AIVS(canvasEl);
+	// 		}
+	// 	};
+
+	// 	init();
+	// });
+
+	// onDestroy(() => {
+	// 	scene?.destroy();
+	// });
 </script>
 
 <div
+	id="aggregated-item-viewer-container"
 	class="max-h-[calc(100vh-16rem)] w-full flex flex-col items-center justify-center overflow-hidden h-full relative z-10 space-y-4 pt-4"
 >
+	<!-- <canvas
+		bind:this={canvasEl}
+		class="absolute top-0 left-0 !w-full !h-full z-0"
+		id="aggregated-item-viewer"
+	></canvas> -->
+
 	{#if selectedItem}
 		<h2
 			in:fly={{ y: -20, duration: 300 }}

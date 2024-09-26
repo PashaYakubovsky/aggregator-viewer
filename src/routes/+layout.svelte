@@ -14,14 +14,19 @@
 			}
 
 			// parse token and check exp date
-			const pToken = JSON.parse(atob(token.split('.')[1]));
-			const time = Date.now();
-			console.log('Token expires at:', new Date(pToken.exp * 1000));
-			const isNotLoginPage = window.location.pathname !== '/login';
+			try {
+				const pToken = JSON.parse(atob(token.split('.')[1]));
+				const time = Date.now();
+				console.log('Token expires at:', new Date(pToken.exp * 1000));
+				const isNotLoginPage = window.location.pathname !== '/login';
 
-			tokenStore.set(token);
+				tokenStore.set(token);
 
-			if (time >= pToken.exp * 1000 && isNotLoginPage) {
+				if (time >= pToken.exp * 1000 && isNotLoginPage) {
+					window.location.href = '/login';
+				}
+			} catch (err) {
+				console.error(err);
 				window.location.href = '/login';
 			}
 		} catch (err) {

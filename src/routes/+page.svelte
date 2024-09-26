@@ -6,6 +6,7 @@
 	import AggregatedItemViewer from '$lib/timeline/AggregatedItemViewer.svelte';
 	import Timeline from '$lib/timeline/Timeline.svelte';
 	import { timelineStore } from '../stores/timeline.store.js';
+	import { browser } from '$app/environment';
 
 	let timeRangeStart = new Date().getTime();
 	let timeRangeEnd = timeRangeStart + 1000 * 60 * 60 * 24;
@@ -106,6 +107,8 @@
 
 <!-- display item -->
 <div class="flex flex-col h-[100svh]">
-	<AggregatedItemViewer selectedItem={$timelineStore.selectedItem} />
+	{#if browser}
+		<AggregatedItemViewer selectedItem={$timelineStore.selectedItem} />
+	{/if}
 	<Timeline {aggregations} {timeRangeStart} {timeRangeEnd} {handleSearch} />
 </div>
