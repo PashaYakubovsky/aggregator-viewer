@@ -366,7 +366,7 @@
 <style>
 	.timeline {
 		height: fit-content;
-		min-height: 15rem;
+		min-height: 8rem;
 		margin-top: auto;
 		display: flex;
 		flex-direction: column;

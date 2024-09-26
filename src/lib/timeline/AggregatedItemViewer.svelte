@@ -8,12 +8,18 @@
 	export let selectedItem: Aggregation | null;
 
 	let isImgLoaded = false;
-	let isImgError = false;
+	let isImgError = true;
+	let isInit = true;
 	let canvasEl: HTMLCanvasElement;
 
-	$: {
+	$: if (selectedItem) {
+		if (isInit) {
+			isImgError = true;
+			isInit = false;
+		} else {
+			isImgError = false;
+		}
 		isImgLoaded = false;
-		isImgError = false;
 	}
 
 	function handleImageLoad() {
@@ -52,7 +58,7 @@
 
 <div
 	id="aggregated-item-viewer-container"
-	class="max-h-[calc(100vh-16rem)] w-full flex flex-col items-center justify-center overflow-hidden h-full relative z-10 space-y-4 pt-4"
+	class="w-full flex flex-col items-center justify-center overflow-hidden h-full relative z-10 space-y-4 pt-4"
 >
 	<!-- <canvas
 		bind:this={canvasEl}
