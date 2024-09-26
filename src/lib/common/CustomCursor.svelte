@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { spring } from 'svelte/motion';
 
@@ -38,17 +39,21 @@
 	}
 
 	onMount(() => {
-		document.addEventListener('mousemove', updateCursorPosition);
-		document.addEventListener('mouseover', handleMouseOver);
-		document.addEventListener('mousedown', handleMouseDown);
-		document.addEventListener('mouseup', handleMouseUp);
+		if (browser) {
+			document.addEventListener('mousemove', updateCursorPosition);
+			document.addEventListener('mouseover', handleMouseOver);
+			document.addEventListener('mousedown', handleMouseDown);
+			document.addEventListener('mouseup', handleMouseUp);
+		}
 	});
 
 	onDestroy(() => {
-		document.removeEventListener('mousemove', updateCursorPosition);
-		document.removeEventListener('mouseover', handleMouseOver);
-		document.removeEventListener('mousedown', handleMouseDown);
-		document.removeEventListener('mouseup', handleMouseUp);
+		if (browser) {
+			document.removeEventListener('mousemove', updateCursorPosition);
+			document.removeEventListener('mouseover', handleMouseOver);
+			document.removeEventListener('mousedown', handleMouseDown);
+			document.removeEventListener('mouseup', handleMouseUp);
+		}
 	});
 </script>
 
