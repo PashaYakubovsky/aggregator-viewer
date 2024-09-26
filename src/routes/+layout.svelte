@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { token as tokenStore } from '../stores/auth';
 	import { goto } from '$app/navigation';
+	import '../app.css';
 
 	onMount(() => {
 		try {

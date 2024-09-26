@@ -182,14 +182,12 @@
 		const centerOffset = (ITEM_SIZE * itemCount) / 2;
 		const virtualList = document.querySelector('.virtual-list-wrapper');
 		if (virtualList) {
-			setTimeout(() => {
-				virtualList.scrollLeft = centerOffset;
-				const virtualListInner = document.querySelector('.virtual-list-inner');
-				if (virtualListInner) {
-					// resize markers container
-					markerItemsContainerStyle = `width: ${virtualListInner.clientWidth}px; position: absolute; top: 0; left: 0;`;
-				}
-			}, 100);
+			virtualList.scrollLeft = centerOffset;
+			const virtualListInner = document.querySelector('.virtual-list-inner');
+			if (virtualListInner) {
+				// resize markers container
+				markerItemsContainerStyle = `width: ${virtualListInner.clientWidth}px; position: absolute; top: 0; left: 0;`;
+			}
 		}
 
 		if (direction === 'in') {
