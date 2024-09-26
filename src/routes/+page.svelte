@@ -83,24 +83,21 @@
 	const handleSearch = (searchedText: string, timeStep: number) => {
 		let fuse = new Fuse(aggregations, fuseOptions);
 		const result = fuse.search(searchedText);
+
 		if (result.length > 0) {
 			const meme = result[0].item;
 			const virtualList = document.querySelector('.virtual-list-wrapper');
-			const markers = document.querySelectorAll('.marker');
-			if (virtualList && markers) {
-				const marker = Array.from(markers).find((m) => {
-					const id = parseInt(m.id);
-					const selectedItem = $timelineStore.selectedItem;
-					if (!selectedItem) return;
-					const markerTime = selectedItem.createdAt.getTime();
-					return Math.abs(id - markerTime) < timeStep;
-				});
-				if (marker) {
-					marker.scrollIntoView({
-						behavior: 'smooth',
-						block: 'center',
-						inline: 'center'
-					});
+			const virtualListInner = document.querySelector('.virtual-list-inner');
+
+			if (virtualList && virtualListInner) {
+				// calculate the position of the item in the list
+				const ratio = (meme.createdAt.getTime() - timeRangeStart) / (timeRangeEnd - timeRangeStart);
+
+				const offset = ratio * virtualListInner.scrollWidth;
+				const halfWidth = virtualList.clientWidth / 2;
+
+				if (virtualList) {
+					virtualList.scrollLeft = offset - halfWidth;
 				}
 			}
 		}
@@ -108,5 +105,7 @@
 </script>
 
 <!-- display item -->
-<AggregatedItemViewer selectedItem={$timelineStore.selectedItem} />
-<Timeline {aggregations} {timeRangeStart} {timeRangeEnd} {handleSearch} />
+<div class="flex flex-col h-[100svh]">
+	<AggregatedItemViewer selectedItem={$timelineStore.selectedItem} />
+	<Timeline {aggregations} {timeRangeStart} {timeRangeEnd} {handleSearch} />
+</div>

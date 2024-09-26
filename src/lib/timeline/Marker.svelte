@@ -10,7 +10,7 @@
 	<button
 		tabindex="-1"
 		on:mousemove={handleTimelineMousemove}
-		id={`time-marker-${time}`}
+		id={`time-marker-${time} bg-sky-500`}
 		on:click={(e) => handleTimeMarkerClick(e, time)}
 		title={new Date(time).toLocaleTimeString('en-US', {
 			hour: 'numeric',
@@ -20,7 +20,7 @@
 		})}
 		class="marker-inner"
 	>
-		<div tabindex="-1" class={`marker-inner__badge ${className}`}></div>
+		<div tabindex="-1" class={`marker-inner__badge bg-sky-500 ${className}`}></div>
 	</button>
 </div>
 
@@ -45,12 +45,12 @@
 		z-index: 2;
 	}
 	.marker-inner:hover {
-		background-color: #d91313;
+		/* background-color: #d91313; */
 	}
 	.marker-inner__badge {
 		width: 0.25rem;
 		margin: 0 auto;
-		background-color: #d91313;
+		/* background-color: #d91313; */
 	}
 	.marker-inner__badge_tiny {
 		height: 0.25rem;

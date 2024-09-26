@@ -66,7 +66,7 @@
 
 	:global(::-webkit-scrollbar) {
 		width: 10px;
-		height: 10px;
+		height: 15px;
 	}
 
 	:global(::-webkit-scrollbar-thumb) {

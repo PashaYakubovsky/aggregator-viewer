@@ -287,7 +287,7 @@
 <div class="timeline">
 	<div class="timeline-inner">
 		<!-- display middle timeline marker to display current time marker -->
-		<dir class="timeline-middle">
+		<dir class="timeline-middle text-sm text-gray-100">
 			{new Date(middleViewportTime).toLocaleTimeString('en-US', {
 				// MMM DD, HH:MM:SS AM/PM
 				month: 'short',
@@ -342,7 +342,7 @@
 			</div>
 		</VirtualList>
 
-		<div class="timeline-viewport timeline-viewport__left">
+		<div class="timeline-viewport timeline-viewport__left text-xs text-gray-300">
 			{new Date(leftViewportTime).toLocaleTimeString('en-US', {
 				hour: 'numeric',
 				minute: 'numeric',
@@ -350,7 +350,7 @@
 				hour12: true
 			})}
 		</div>
-		<div class="timeline-viewport timeline-viewport__right">
+		<div class="timeline-viewport timeline-viewport__right text-xs text-gray-300">
 			{new Date(rightViewportTime).toLocaleTimeString('en-US', {
 				hour: 'numeric',
 				minute: 'numeric',
@@ -415,9 +415,9 @@
 		height: fit-content;
 		pointer-events: none;
 		padding: 0.25rem;
-		color: white;
-		font-size: 0.5rem;
-		line-height: 0.75rem;
+		/* color: white; */
+		/* font-size: 0.5rem; */
+		/* line-height: 0.75rem; */
 	}
 	.timeline-viewport__left {
 		left: 0;
@@ -428,15 +428,15 @@
 
 	.timeline-middle {
 		position: absolute;
-		top: -2rem;
+		top: -2.7rem;
 		left: 50%;
 		transform: translate(-50%, 0);
 		color: white;
 		z-index: 2;
 
 		border-radius: 0.25rem;
-		font-size: 0.75rem;
-		line-height: 0.75rem;
+		/* font-size: 0.75rem; */
+		/* line-height: 0.75rem; */
 		padding: 0.25rem;
 	}
 	.timeline-middle::after {
@@ -449,7 +449,7 @@
 		height: 0;
 		border-left: 0.25rem solid transparent;
 		border-right: 0.25rem solid transparent;
-		border-top: 0.5rem solid #131212;
+		border-top: 0.5rem solid rgb(14 165 233);
 	}
 	.marker-items__container {
 		height: 0;

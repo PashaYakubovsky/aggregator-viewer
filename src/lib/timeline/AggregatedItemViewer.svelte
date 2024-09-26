@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { fade, fly } from 'svelte/transition';
+	import { Loader2 } from 'lucide-svelte';
+
+	export let selectedItem: Aggregation | null;
+
 	let isImgLoaded = false;
 	let isImgError = false;
-	// $: selectedItem = $timelineStore.selectedItem;
-	export let selectedItem: Aggregation | null;
 
 	$: {
 		isImgLoaded = false;
@@ -19,61 +22,46 @@
 	}
 </script>
 
-<div class="aggregated-item">
+<div
+	class="max-h-[calc(100vh-16rem)] w-full flex flex-col items-center justify-center overflow-hidden h-full relative z-10 space-y-4 pt-4"
+>
 	{#if selectedItem}
-		<div class="aggregated-item__inner-title">{selectedItem.name}</div>
+		<h2
+			in:fly={{ y: -20, duration: 300 }}
+			class="text-xl font-semibold text-gray-200 text-center px-4"
+		>
+			{selectedItem.name}
+		</h2>
 
 		{#if selectedItem.imageUrl && !isImgError}
-			<img
-				on:load={handleImageLoad}
-				on:error={handleImageError}
-				class="aggregated-item__inner-img"
-				src={selectedItem.imageUrl}
-				alt={selectedItem.name}
-			/>
+			<div
+				class="w-full h-full flex items-center justify-center overflow-hidden"
+				in:fade={{ duration: 300 }}
+			>
+				<img
+					on:load={handleImageLoad}
+					on:error={handleImageError}
+					class="w-full h-auto max-h-[calc(100%-2rem)] object-contain rounded-lg shadow-lg"
+					src={selectedItem.imageUrl}
+					alt={selectedItem.name}
+				/>
+			</div>
 		{/if}
 
 		{#if isImgError}
-			<div class="aggregated-item__error">Error loading image</div>
+			<div
+				in:fade={{ duration: 300 }}
+				class="text-red-400 bg-red-900 bg-opacity-50 px-4 py-2 rounded-md"
+			>
+				Error loading image
+			</div>
 		{:else if !isImgLoaded}
-			<div class="aggregated-item__loading">Loading...</div>
+			<div in:fade={{ duration: 300 }} class="text-blue-400 flex items-center space-x-2">
+				<Loader2 class="animate-spin" />
+				<span>Loading...</span>
+			</div>
 		{/if}
+	{:else}
+		<div class="text-gray-400">No item selected</div>
 	{/if}
 </div>
-
-<style>
-	.aggregated-item {
-		max-height: calc(100svh - 16rem);
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-		height: 100%;
-		position: relative;
-		z-index: 1;
-		gap: 1rem;
-		padding-top: 1rem;
-	}
-	.aggregated-item__inner-title {
-		color: white;
-		font-size: 1rem;
-		line-height: 1.5rem;
-		text-align: center;
-	}
-	.aggregated-item__inner-img {
-		width: 100%;
-		max-height: calc(100% - 2rem);
-		height: auto;
-		object-fit: contain;
-	}
-	.aggregated-item__error,
-	.aggregated-item__loading {
-		color: white;
-		position: absolute;
-		bottom: 0;
-		left: 50%;
-		transform: translateX(-50%);
-	}
-</style>

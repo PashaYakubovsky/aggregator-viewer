@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { draggable, type DragOptions } from '@neodrag/svelte';
+	import { ChevronLeft, ChevronRight, Search, ZoomIn, ZoomOut } from 'lucide-svelte';
 
 	let options: DragOptions = {
 		axis: 'both',
@@ -29,86 +30,29 @@
 			class="timeline-controls__button"
 			on:click={scrollToPrevMarker}
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="feather feather-chevron-right"
-			>
-				<polyline points="9 18 15 12 9 6"></polyline>
-			</svg>
+			<ChevronLeft />
 		</button>
 		<button
 			title="Scroll to next marker"
 			class="timeline-controls__button"
 			on:click={scrollToNextMarker}
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="feather feather-chevron-left"
-			>
-				<polyline points="15 18 9 12 15 6"></polyline>
-			</svg>
+			<ChevronRight />
 		</button>
 
 		<!-- zoom in, zoom out -->
 		<button title="Zoom in" class="timeline-controls__button" on:click={zoomIn}>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="feather feather-zoom-in"
-			>
-				<circle cx="11" cy="11" r="8"></circle>
-				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-				<line x1="11" y1="8" x2="11" y2="14"></line>
-				<line x1="8" y1="11" x2="14" y2="11"></line>
-			</svg>
+			<ZoomIn />
 		</button>
 
 		<button title="Zoom out" class="timeline-controls__button" on:click={zoomOut}>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="feather feather-zoom-out"
-			>
-				<circle cx="11" cy="11" r="8"></circle>
-				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-				<line x1="8" y1="11" x2="14" y2="11"></line>
-			</svg>
+			<ZoomOut />
 		</button>
 
 		<!-- search -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<button title="Search" class="timeline-controls__button timeline-controls__search">
-			<svg
+		<div title="Search" class="timeline-controls__button timeline-controls__search">
+			<!-- <svg
 				role="button"
 				tabindex="-1"
 				on:click={handleSearch}
@@ -125,7 +69,11 @@
 			>
 				<circle cx="11" cy="11" r="8"></circle>
 				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-			</svg>
+			</svg> -->
+
+			<button on:click={handleSearch}>
+				<Search role="button" />
+			</button>
 
 			{#if searchOpen}
 				<input
@@ -141,7 +89,7 @@
 					class="timeline-controls__search"
 				/>
 			{/if}
-		</button>
+		</div>
 	</div>
 </div>
 

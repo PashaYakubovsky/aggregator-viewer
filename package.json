@@ -36,6 +36,7 @@
 		"fuse.js": "^7.0.0",
 		"graphql-ws": "^5.16.0",
 		"gsap": "^3.12.5",
+		"lucide-svelte": "^0.446.0",
 		"svelte-tiny-virtual-list": "^2.1.2"
 	}
 }

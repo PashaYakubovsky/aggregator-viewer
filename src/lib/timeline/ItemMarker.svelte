@@ -17,7 +17,7 @@
 	on:click={(e) => handleClick(e, aggr)}
 	title={dayjs(aggr.createdAtTime * 1000).format('YYYY MMM DD HH:mm:ss')}
 	bind:this={markerEl}
-	class="marker-inner"
+	class="marker-inner bg-sky-300"
 ></button>
 
 <style>
@@ -28,7 +28,7 @@
 		transition: background-color 0.3s;
 		position: absolute;
 		z-index: 2;
-		background-color: aquamarine;
+		/* background-color: aquamarine; */
 		transition: 0.3s ease-in-out transform;
 		z-index: 3;
 	}
