@@ -9,16 +9,10 @@
 
 	let isImgLoaded = false;
 	let isImgError = true;
-	let isInit = true;
 	let canvasEl: HTMLCanvasElement;
 
 	$: if (selectedItem) {
-		if (isInit) {
-			isImgError = true;
-			isInit = false;
-		} else {
-			isImgError = false;
-		}
+		isImgError = false;
 		isImgLoaded = false;
 	}
 
