@@ -130,7 +130,7 @@
 <div
 	class="cursor-dot"
 	class:clicking={isClicking}
-	style="left: {cursorX}px; top: {cursorY}px;"
+	style="left: {cursorX - 2}px; top: {cursorY - 2}px;"
 ></div>
 
 <style>
