@@ -5,6 +5,7 @@
 	import { page } from '$app/stores';
 	import '../app.css';
 	import CustomCursor from '$lib/common/CustomCursor.svelte';
+	import '../lib/common/rickroll';
 
 	onMount(() => {
 		const init = async () => {

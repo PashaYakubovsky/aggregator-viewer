@@ -4,7 +4,9 @@
 	export let aggr: Aggregation;
 	export let timeRangeStart: number;
 	export let timeRangeEnd: number;
+	export let handleMouseMove: (e: MouseEvent, aggr: Aggregation) => void;
 	export let handleClick: (e: MouseEvent, aggr: Aggregation) => void;
+	export let handleMouseOut: (e: MouseEvent, aggr: Aggregation) => void;
 	let markerEl: HTMLButtonElement;
 
 	$: if (markerEl) {
@@ -15,6 +17,8 @@
 <button
 	tabindex="-1"
 	on:click={(e) => handleClick(e, aggr)}
+	on:mousemove={(e) => handleMouseMove(e, aggr)}
+	on:mouseout={(e) => handleMouseOut(e, aggr)}
 	title={dayjs(aggr.createdAtTime * 1000).format('YYYY MMM DD HH:mm:ss')}
 	bind:this={markerEl}
 	class="marker-inner bg-sky-300"

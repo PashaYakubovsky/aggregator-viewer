@@ -8,6 +8,7 @@
 	import VirtualList from 'svelte-tiny-virtual-list';
 	import TimelineControls from '$lib/timeline/TimelineControls.svelte';
 	import { timelineStore } from '../../stores/timeline.store';
+	import { invalidate } from '$app/navigation';
 
 	gsap.registerPlugin(Observer);
 
@@ -114,24 +115,6 @@
 		const { width } = timelineTooltip.getBoundingClientRect();
 		const tooltipWidth = width / 2;
 
-		const target = event.currentTarget as HTMLElement;
-		const time = parseInt(target.id.replace('time-marker-', ''));
-
-		// define hovered timestamp
-		console.log('hoveredTime', new Date(time).toLocaleTimeString('en-US'));
-
-		// find closest meme to the hovered time
-		const closestMeme = aggregations.find((m) => {
-			const diff = Math.abs(m.createdAt.getTime() - time);
-			return diff < timeStep;
-		});
-
-		// set img as background image
-		const imgUrl = closestMeme?.imageUrl;
-		if (timelineTooltip) {
-			timelineTooltip.style.background = `url(${imgUrl}) no-repeat center center/contain`;
-		}
-
 		// check if tooltip is out of bounds
 		if (clientX - tooltipWidth < 0) {
 			timelineTooltip.style.left = '0';
@@ -170,7 +153,7 @@
 		}
 	};
 
-	let handleZoom = (direction: 'in' | 'out') => {
+	let handleZoom = async (direction: 'in' | 'out') => {
 		const zoomAmount = 1000 * 60 * 5;
 
 		const tTimeStep = timeStep * (direction === 'in' ? 0.5 : 2);
@@ -247,7 +230,6 @@
 
 		let index = aggregations.findIndex((m) => m.id === selectedItem?.id);
 		if (index === -1) return;
-		console.log('index', index);
 
 		let nextMeme = aggregations[index + 1];
 		if (type === 'prev') {
@@ -271,6 +253,36 @@
 			if (virtualList) {
 				virtualList.scrollLeft = offset - halfWidth;
 			}
+		}
+	};
+
+	let handleItemMarkerMousemove = (e: MouseEvent, aggr: Aggregation) => {
+		// set img as background image
+		const imgUrl = aggr?.imageUrl;
+		if (timelineTooltip) {
+			timelineTooltip.style.background = `url(${imgUrl}) no-repeat center center/contain`;
+		}
+	};
+	let handleItemMarkerMouseOut = () => {
+		if (timelineTooltip) {
+			timelineTooltip.style.background = 'none';
+		}
+	};
+	let handleItemMarkerClick = (e: MouseEvent, aggr: Aggregation) => {
+		$timelineStore.selectedItem = aggr;
+		const virtualList = document.querySelector('.virtual-list-wrapper');
+		const virtualListInner = document.querySelector('.virtual-list-inner') as HTMLDivElement;
+
+		if (!virtualListInner || !virtualList) return;
+
+		const ratio = (aggr.createdAt.getTime() - timeRangeStart) / (timeRangeEnd - timeRangeStart);
+
+		const offset = ratio * virtualListInner.scrollWidth;
+		const halfWidth = virtualList.clientWidth / 2;
+		if (itemMarkersEl) itemMarkersEl.style.transform = `translateX(-${offset + halfWidth}px)`;
+
+		if (virtualList) {
+			virtualList.scrollLeft = offset - halfWidth;
 		}
 	};
 </script>
@@ -307,16 +319,16 @@
 		>
 			{#each aggregations as aggr}
 				<!-- do not render if it's not in viewport time -->
-				<!-- {#if aggr.createdAt.getTime() >= leftViewportTime && aggr.createdAt.getTime() <= rightViewportTime} -->
-				<ItemMarker
-					{timeRangeStart}
-					{timeRangeEnd}
-					{aggr}
-					handleClick={(e, aggr) => {
-						$timelineStore.selectedItem = aggr;
-					}}
-				/>
-				<!-- {/if} -->
+				{#if aggr.createdAtTime * 1000 >= leftViewportTime && aggr.createdAtTime * 1000 <= rightViewportTime}
+					<ItemMarker
+						handleMouseMove={handleItemMarkerMousemove}
+						handleMouseOut={handleItemMarkerMouseOut}
+						{timeRangeStart}
+						{timeRangeEnd}
+						{aggr}
+						handleClick={handleItemMarkerClick}
+					/>
+				{/if}
 			{/each}
 		</div>
 
@@ -404,7 +416,7 @@
 		width: 15rem;
 		height: 10rem;
 		border-radius: 0.25rem;
-		background-color: #6d6b6b;
+		background-color: transparent;
 		pointer-events: none;
 		opacity: 0;
 	}
