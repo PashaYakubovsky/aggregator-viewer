@@ -1,38 +1,47 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { token as tokenStore } from '../stores/auth';
-	import { goto } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
+	import { page } from '$app/stores';
 	import '../app.css';
 	import CustomCursor from '$lib/common/CustomCursor.svelte';
 
 	onMount(() => {
-		try {
-			const isNotLoginPage = window.location.pathname !== '/login';
-			// check if token is available
-			const token = localStorage.getItem('token') || '';
-			if (!token) {
-				if (isNotLoginPage) window.location.href = '/login';
-				tokenStore.set(token);
-				return;
-			}
-
-			// parse token and check exp date
+		const init = async () => {
 			try {
-				const pToken = JSON.parse(atob(token.split('.')[1]));
-				const time = Date.now();
-				console.log('Token expires at:', new Date(pToken.exp * 1000));
+				const isNotLoginPage = $page.url.pathname !== '/login';
+				// check if token is available
+				const token = localStorage.getItem('token') || '';
+				if (!token) {
+					if (isNotLoginPage) {
+						await invalidate('/login');
+						await goto('/login');
+					}
+					tokenStore.set(token);
+					return;
+				}
 
-				tokenStore.set(token);
+				// parse token and check exp date
+				try {
+					const pToken = JSON.parse(atob(token.split('.')[1]));
+					const time = Date.now();
+					console.log('Token expires at:', new Date(pToken.exp * 1000));
 
-				if (time >= pToken.exp * 1000 && isNotLoginPage) {
-					window.location.href = '/login';
+					tokenStore.set(token);
+
+					if (time >= pToken.exp * 1000 && isNotLoginPage) {
+						await invalidate('/login');
+						await goto('/login');
+					}
+				} catch (err) {
+					console.error(err);
 				}
 			} catch (err) {
 				console.error(err);
 			}
-		} catch (err) {
-			console.error(err);
-		}
+		};
+
+		init();
 	});
 </script>
 

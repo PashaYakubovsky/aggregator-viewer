@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { pushState } from '$app/navigation';
 	import { register } from '$lib/login';
 	import { fade } from 'svelte/transition';
 
@@ -23,7 +24,7 @@
 		const token = (await register(username, password)) || '';
 		if (token) {
 			localStorage.setItem('token', token);
-			window.location.href = '/';
+			pushState('/', {});
 		}
 		isLoading = false;
 	}
