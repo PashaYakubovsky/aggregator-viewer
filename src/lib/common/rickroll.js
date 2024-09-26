@@ -191,10 +191,11 @@ export const rickroll = {
 			let textIndex = 0;
 			let textLen = neverGonnaGiveYouUp.length;
 			let text = [];
-			for (let i = 0; i < sequence.length; i++) {
+			let seqLen = sequence.length;
+			for (let i = 0; i < seqLen; i++) {
 				text.push(neverGonnaGiveYouUp[textIndex]);
 				yield { frame: sequence[i], text: text.join('\n') };
-				if (i === sequence.length - 1) i = 0;
+				if (i === seqLen - 1) i = 0;
 				textIndex++;
 				if (textIndex === textLen) {
 					textIndex = 0;
