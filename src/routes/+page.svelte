@@ -105,6 +105,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Aggregator</title>
+</svelte:head>
+
 <!-- display item -->
 <div class="flex flex-col h-[100svh]">
 	{#if browser}

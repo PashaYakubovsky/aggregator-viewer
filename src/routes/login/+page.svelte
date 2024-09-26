@@ -14,8 +14,6 @@
 		isLoading = true;
 		errorMessage = '';
 
-		debugger;
-
 		const target = event.target as HTMLFormElement;
 		// @ts-ignore
 		const name = target.name.value;
@@ -26,7 +24,7 @@
 
 			if (token) {
 				localStorage.setItem('token', token);
-				goto('/');
+				return goto('/');
 			} else {
 				errorMessage = 'Incorrect username or password';
 			}
@@ -39,7 +37,7 @@
 	}
 
 	function handleRegister() {
-		goto('/register');
+		return goto('/register');
 	}
 </script>
 

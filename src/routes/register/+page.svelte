@@ -15,7 +15,6 @@
 		const username = target.name.value;
 		const password = target.password.value;
 		const confirmPassword = target.cpassword.value;
-		debugger;
 		if (password !== confirmPassword) {
 			errorMessage = 'Passwords do not match';
 			return;
