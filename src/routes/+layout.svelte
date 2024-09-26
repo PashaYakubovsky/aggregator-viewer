@@ -3,6 +3,7 @@
 	import { token as tokenStore } from '../stores/auth';
 	import { goto } from '$app/navigation';
 	import '../app.css';
+	import CustomCursor from '$lib/common/CustomCursor.svelte';
 
 	onMount(() => {
 		try {
@@ -44,6 +45,8 @@
 {:else}
 	<p>Redirecting...</p>
 {/if}
+
+<CustomCursor />
 
 <style>
 	:global(body),
