@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { token as tokenStore } from '../stores/auth';
 	import { goto, invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import '../app.css';
 	import CustomCursor from '$lib/common/CustomCursor.svelte';
-	import '../lib/common/rickroll';
+	import { rickroll } from '../lib/common/rickroll';
+
+	let rafId: NodeJS.Timeout;
 
 	onMount(() => {
 		const init = async () => {
@@ -40,9 +42,15 @@
 			} catch (err) {
 				console.error(err);
 			}
+
+			rafId = rickroll.init();
 		};
 
 		init();
+	});
+
+	onDestroy(() => {
+		if (rafId) clearInterval(rafId);
 	});
 </script>
 
