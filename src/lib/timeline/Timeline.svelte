@@ -38,13 +38,8 @@
 		width = window.innerWidth;
 
 		const virtualList = document.querySelector('.virtual-list-wrapper');
-		if (virtualList) {
-			virtualList.scrollLeft = (ITEM_SIZE * itemCount) / 2;
-		}
-
 		const virtualListInner = document.querySelector('.virtual-list-inner');
-		if (virtualListInner) {
-			// resize markers container
+		if (virtualList && virtualListInner) {
 			markerItemsContainerStyle = `width: ${virtualListInner.clientWidth}px; position: absolute; top: 0; left: 0;`;
 		}
 	}
@@ -57,13 +52,14 @@
 			markerItemsContainerStyle = `width: ${ITEM_SIZE * itemCount}px; position: absolute; top: 0; left: 0;`;
 			// scroll to first aggr item
 			const virtualList = document.querySelector('.virtual-list-wrapper');
+			const virtualListInner = document.querySelector('.virtual-list-inner');
 
-			if (virtualList) {
+			if (virtualList && virtualListInner) {
 				// scroll to middle
 				setTimeout(() => {
-					virtualList.scrollLeft = (ITEM_SIZE * itemCount) / 2;
-					$timelineStore.selectedItem = aggregations[Math.round(aggregations.length / 2)];
-				}, 1000);
+					virtualList.scrollLeft = virtualListInner.scrollWidth;
+					$timelineStore.selectedItem = aggregations.at(-1) || null;
+				}, 100);
 			}
 		}
 
