@@ -135,7 +135,7 @@
 
 		target.scrollIntoView({
 			behavior: 'smooth',
-			block: 'center',
+			block: 'end',
 			inline: 'center'
 		});
 
@@ -383,6 +383,12 @@
 		overflow: hidden;
 		position: relative;
 		z-index: 2;
+	}
+	:global(.virtual-list-wrapper) {
+		overflow-y: hidden !important;
+	}
+	:global(.virtual-list-inner) {
+		overflow-y: hidden !important;
 	}
 	.timeline-inner {
 		position: relative;
