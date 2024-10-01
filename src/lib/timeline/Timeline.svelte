@@ -388,12 +388,13 @@
 <style>
 	.timeline {
 		height: fit-content;
-		min-height: 8rem;
+		min-height: 12rem;
 		margin-top: auto;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-end;
+		overflow: hidden;
 		position: relative;
 		z-index: 2;
 	}
