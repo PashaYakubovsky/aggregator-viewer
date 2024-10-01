@@ -24,7 +24,7 @@
 
 <div
 	id="aggregated-item-viewer-container"
-	class="w-full flex flex-col items-center justify-top overflow-hidden h-full relative z-10 space-y-4 pt-4"
+	class="w-full flex flex-col items-center justify-top overflow-hidden h-full relative z-0 space-y-4 pt-4"
 >
 	{#if selectedItem}
 		<h2

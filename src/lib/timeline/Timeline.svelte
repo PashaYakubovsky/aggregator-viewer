@@ -243,6 +243,21 @@
 
 			const offset = ratio * virtualListInner.scrollWidth;
 			const halfWidth = virtualList.clientWidth / 2;
+
+			// check bounds for scroll
+			if (offset - halfWidth < 0) {
+				virtualList.scrollLeft = 0;
+				if (itemMarkersEl) itemMarkersEl.style.transform = `translateX(0)`;
+				return;
+			}
+
+			if (offset + halfWidth > virtualListInner.scrollWidth) {
+				virtualList.scrollLeft = virtualListInner.scrollWidth - virtualList.clientWidth;
+				if (itemMarkersEl)
+					itemMarkersEl.style.transform = `translateX(-${virtualListInner.scrollWidth - virtualList.clientWidth}px)`;
+				return;
+			}
+
 			if (itemMarkersEl) itemMarkersEl.style.transform = `translateX(-${offset + halfWidth}px)`;
 
 			if (virtualList) {
@@ -379,7 +394,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-end;
-		overflow: hidden;
 		position: relative;
 		z-index: 2;
 	}
