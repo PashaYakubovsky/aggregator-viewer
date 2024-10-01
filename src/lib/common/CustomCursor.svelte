@@ -102,15 +102,13 @@
 			xmlns="http://www.w3.org/2000/svg"
 		>
 			<circle cx="20" cy="20" r="18" stroke="white" stroke-width="2" />
-			{#if !isPointerImg}
-				<path
-					class:visible={isPointer}
-					d="M20 10V30M10 20H30"
-					stroke="white"
-					stroke-width="2"
-					stroke-linecap="round"
-				/>
-			{/if}
+			<path
+				class:visible={isPointer}
+				d="M20 10V30M10 20H30"
+				stroke="white"
+				stroke-width="2"
+				stroke-linecap="round"
+			/>
 		</svg>
 	</div>
 {/if}
@@ -192,9 +190,9 @@
 			0 0 10px rgba(0, 0, 0, 0.25);
 		overflow: hidden;
 	}
-	:global(button:hover),
+	/* :global(button:hover),
 	:global(img:hover) {
 		transform: scale(1.05);
 		transition: transform 0.3s ease;
-	}
+	} */
 </style>

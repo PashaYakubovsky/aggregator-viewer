@@ -6,6 +6,7 @@
 	import '../app.css';
 	import CustomCursor from '$lib/common/CustomCursor.svelte';
 	import { rickroll } from '../lib/common/rickroll';
+	import { sessionStore } from '../stores/session';
 
 	let rafId: NodeJS.Timeout;
 
@@ -28,9 +29,13 @@
 				try {
 					const pToken = JSON.parse(atob(token.split('.')[1]));
 					const time = Date.now();
+
 					console.log('Token expires at:', new Date(pToken.exp * 1000));
 
 					tokenStore.set(token);
+					sessionStore.update((s) => ({ ...s, user: pToken }));
+
+					localStorage.setItem('session', JSON.stringify(pToken));
 
 					if (time >= pToken.exp * 1000 && isNotLoginPage) {
 						await invalidate('/login');
@@ -43,7 +48,7 @@
 				console.error(err);
 			}
 
-			rafId = rickroll.init();
+			if (process.env.NODE_ENV !== 'development') rafId = rickroll.init();
 		};
 
 		init();

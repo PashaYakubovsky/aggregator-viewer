@@ -11,6 +11,7 @@ export async function login(username: string, password: string) {
 			body: JSON.stringify({ username, password })
 		});
 
+		console.log('response', username, password, response);
 		const data = await response.json();
 		if (response.ok) {
 			token.set(data.access_token);

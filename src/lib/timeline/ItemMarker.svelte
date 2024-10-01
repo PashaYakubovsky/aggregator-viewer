@@ -9,8 +9,19 @@
 	export let handleMouseOut: (e: MouseEvent, aggr: Aggregation) => void;
 	let markerEl: HTMLButtonElement;
 
+	const getColorFromString = (str: string) => {
+		// return same color for same subreddit
+		let hash = 0;
+		for (let i = 0; i < str.length; i++) {
+			hash = str.charCodeAt(i) + ((hash << 5) - hash);
+		}
+		let c = (hash & 0x00ffffff).toString(16).toUpperCase();
+		return '#' + '00000'.substring(0, 6 - c.length) + c;
+	};
+
 	$: if (markerEl) {
 		markerEl.style.left = `${((aggr.createdAt.getTime() - timeRangeStart) / (timeRangeEnd - timeRangeStart)) * 100}%`;
+		markerEl.style.backgroundColor = getColorFromString(aggr.subreddit);
 	}
 </script>
 
@@ -19,9 +30,12 @@
 	on:click={(e) => handleClick(e, aggr)}
 	on:mousemove={(e) => handleMouseMove(e, aggr)}
 	on:mouseout={(e) => handleMouseOut(e, aggr)}
+	on:blur={() => {
+		markerEl.blur();
+	}}
 	title={dayjs(aggr.createdAtTime * 1000).format('YYYY MMM DD HH:mm:ss')}
 	bind:this={markerEl}
-	class="marker-inner bg-sky-300"
+	class="marker-inner"
 ></button>
 
 <style>

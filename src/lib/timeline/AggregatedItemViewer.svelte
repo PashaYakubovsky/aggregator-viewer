@@ -1,19 +1,16 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
 	import { Loader2 } from 'lucide-svelte';
-	// import { onDestroy, onMount } from 'svelte';
-	// import { browser } from '$app/environment';
-	// import type AggregatedItemViewerScene from './AggregatedItemViewerScene';
 
 	export let selectedItem: Aggregation | null;
 
 	let isImgLoaded = false;
 	let isImgError = true;
-	let canvasEl: HTMLCanvasElement;
 
 	$: if (selectedItem) {
 		isImgError = false;
 		isImgLoaded = false;
+		console.log('selectedItem', selectedItem.imageUrl);
 	}
 
 	function handleImageLoad() {
@@ -24,49 +21,60 @@
 		console.error(err);
 		isImgError = true;
 	}
-
-	// let scene: AggregatedItemViewerScene;
-	// onMount(() => {
-	// 	const init = async () => {
-	// 		if (browser && canvasEl) {
-	// 			// setup three.js
-	// 			const AIVS = (await import('./AggregatedItemViewerScene.js')).default;
-	// 			console.log('AIVS:', AIVS);
-	// 			const aicontainer = document.getElementById('aggregated-item-viewer-container');
-	// 			if (aicontainer) {
-	// 				canvasEl.height = aicontainer.clientHeight;
-	// 				canvasEl.width = aicontainer.clientWidth;
-	// 			}
-
-	// 			scene = new AIVS(canvasEl);
-	// 		}
-	// 	};
-
-	// 	init();
-	// });
-
-	// onDestroy(() => {
-	// 	scene?.destroy();
-	// });
 </script>
 
 <div
 	id="aggregated-item-viewer-container"
-	class="w-full flex flex-col items-center justify-center overflow-hidden h-full relative z-10 space-y-4 pt-4"
+	class="w-full flex flex-col items-center justify-top overflow-hidden h-full relative z-10 space-y-4 pt-4"
 >
-	<!-- <canvas
-		bind:this={canvasEl}
-		class="absolute top-0 left-0 !w-full !h-full z-0"
-		id="aggregated-item-viewer"
-	></canvas> -->
-
 	{#if selectedItem}
 		<h2
 			in:fly={{ y: -20, duration: 300 }}
-			class="text-xl font-semibold text-gray-200 text-center px-4"
+			class="text-xl font-semibold text-gray-200 text-center px-4 max-w-[80vw]"
 		>
 			{selectedItem.name}
 		</h2>
+
+		{#if selectedItem.subreddit}
+			<!-- show badge -->
+			<div class="flex items-center space-x-2 px-4 py-2">
+				<div
+					in:fade={{ duration: 300 }}
+					class="flex items-center space-x-2 px-4 py-2 bg-gray-800 bg-opacity-50 rounded-md"
+				>
+					<span class="text-sm text-gray-400">r/{selectedItem.subreddit}</span>
+				</div>
+
+				<!-- show go to comments badge -->
+
+				<a
+					href={`https://www.reddit.com${selectedItem.permalink}`}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-sm text-gray-400 hover:text-gray-200"
+				>
+					Go to comments
+				</a>
+			</div>
+		{/if}
+
+		{#if selectedItem.selftextHtml}
+			{@const cleanedHtml = selectedItem.selftextHtml
+				.replace(/<!-- SC_OFF -->|<!-- SC_ON -->/g, '')
+				.replace(/&lt;/g, '<')
+				.replace(/&gt;/g, '>')
+				.replace(/&amp;/g, '&')}
+
+			{@const contentMatch = cleanedHtml.match(/<div class="md">([\s\S]*?)<\/div>/)}
+			{@const innerContent = contentMatch ? contentMatch[1] : ''}
+
+			<div
+				class="text-sm text-gray-400 max-h-[50svh] overflow-y-scroll w-[80vw]"
+				in:fade={{ duration: 300 }}
+			>
+				{@html innerContent}
+			</div>
+		{/if}
 
 		{#if selectedItem.imageUrl && !isImgError}
 			<div
@@ -90,7 +98,7 @@
 			>
 				Error loading image
 			</div>
-		{:else if !isImgLoaded}
+		{:else if !isImgLoaded && selectedItem.imageUrl}
 			<div in:fade={{ duration: 300 }} class="text-blue-400 flex items-center space-x-2">
 				<Loader2 class="animate-spin" />
 				<span>Loading...</span>

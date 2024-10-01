@@ -1,0 +1,20 @@
+query GetAggregationsAndUsers($skip: Int, $take: Int, $subscribedTopics: [String!]) {
+	getAggregations(skip: $skip, take: $take, filter: $subscribedTopics) {
+		createdAtTime
+		from
+		id
+		imageUrl
+		name
+		type
+		selftext
+		selftextHtml
+		subreddit
+		permalink
+	}
+
+	getUsers {
+		id
+		username
+		subscribedTopics
+	}
+}

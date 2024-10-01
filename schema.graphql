@@ -13,6 +13,10 @@ type Aggregation {
   id: ID!
   imageUrl: String
   name: String!
+  permalink: String
+  selftext: String
+  selftextHtml: String
+  subreddit: String
   type: String
 }
 
@@ -20,8 +24,10 @@ type Aggregation {
 scalar Date
 
 type Mutation {
-  addAggregation(newExampleData: NewAggregationInput!): Aggregation!
+  addAggregation(input: NewAggregationInput!): Aggregation!
+  addUser(userInput: UpdateUserInput!): User!
   removeAggregation(id: String!): Boolean!
+  removeUser(id: String!): Boolean!
 }
 
 input NewAggregationInput {
@@ -31,10 +37,28 @@ input NewAggregationInput {
 
 type Query {
   getAggregation(id: String!): Aggregation!
-  getAggregations(skip: Int! = 0, take: Int! = 25): [Aggregation!]!
+  getAggregations(filter: [String!], skip: Int! = 0, take: Int! = 25): [Aggregation!]!
+  getUser(id: String!): User!
+  getUsers: [User!]!
 }
 
 type Subscription {
   aggregationAdded: Aggregation!
   aggregationUpdated: Aggregation!
+  usersUpdated: User!
+}
+
+input UpdateUserInput {
+  avatarUrl: String
+  name: String!
+  subscribedTopics: [String!]!
+  userId: String!
+}
+
+"""User"""
+type User {
+  id: ID!
+  passwordHash: String
+  subscribedTopics: [String!]!
+  username: String!
 }

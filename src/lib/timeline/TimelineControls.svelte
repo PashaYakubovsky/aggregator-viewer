@@ -119,19 +119,4 @@
 	.timeline-controls__button:hover {
 		background-color: rgba(0, 0, 0, 0.7);
 	}
-	.timeline-controls__button:hover .feather {
-		color: #6d6b6b;
-	}
-	.feather {
-		display: block;
-		transition: 0.3s ease-in-out all;
-		width: 1.5rem;
-		height: 1.5rem;
-	}
-	.feather-chevron-left {
-		transform: rotate(180deg);
-	}
-	.feather-chevron-right {
-		transform: rotate(180deg);
-	}
 </style>

@@ -17,6 +17,17 @@ declare global {
 		from: string;
 		type: string;
 		createdAtTime: number;
+		selftext: string;
+		selftextHtml: string;
+		subreddit: string;
+		permalink: string;
+		color?: string;
+	};
+
+	export type User = {
+		id: string;
+		subscribedTopics: string[];
+		username: string;
 	};
 }
 
