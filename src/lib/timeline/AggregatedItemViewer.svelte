@@ -10,7 +10,6 @@
 	$: if (selectedItem) {
 		isImgError = false;
 		isImgLoaded = false;
-		console.log('selectedItem', selectedItem.imageUrl);
 	}
 
 	function handleImageLoad() {

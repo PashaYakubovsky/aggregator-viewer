@@ -197,13 +197,12 @@
 
 		// get the middle of the viewport
 		middleViewportTime = Math.round(leftViewportTime + (rightViewportTime - leftViewportTime) / 2);
-
+		const threshold = (width / ITEM_SIZE) * timeStep;
 		// select item from the middle of the viewport
 		const closestMeme = aggregations.find((m) => {
 			const timeMs = m.createdAtTime * 1000;
 			const diff = Math.abs(timeMs - middleViewportTime);
-
-			return diff < timeStep * 2;
+			return diff < threshold;
 		});
 
 		const selectedItem = $timelineStore.selectedItem;
