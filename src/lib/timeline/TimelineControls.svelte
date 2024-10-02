@@ -41,13 +41,13 @@
 		</button>
 
 		<!-- zoom in, zoom out -->
-		<button title="Zoom in" class="timeline-controls__button" on:click={zoomIn}>
+		<!-- <button title="Zoom in" class="timeline-controls__button" on:click={zoomIn}>
 			<ZoomIn pointer-events="none" />
 		</button>
 
 		<button title="Zoom out" class="timeline-controls__button" on:click={zoomOut}>
 			<ZoomOut pointer-events="none" />
-		</button>
+		</button> -->
 
 		<!-- search -->
 		<div title="Search" class="timeline-controls__button timeline-controls__search">
