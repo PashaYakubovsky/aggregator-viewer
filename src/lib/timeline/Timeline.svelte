@@ -331,6 +331,7 @@
 				<!-- do not render if it's not in viewport time -->
 				{#if aggr.createdAtTime * 1000 >= leftViewportTime && aggr.createdAtTime * 1000 <= rightViewportTime}
 					<ItemMarker
+						isSelected={$timelineStore.selectedItem?.id === aggr.id}
 						handleMouseMove={handleItemMarkerMousemove}
 						handleMouseOut={handleItemMarkerMouseOut}
 						{timeRangeStart}

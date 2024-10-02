@@ -3,7 +3,7 @@
 	import Button from '$lib/common/Button.svelte';
 	import { login } from '$lib/login';
 	import { fade } from 'svelte/transition';
-	import { sessionStore } from '../../stores/session';
+	import { sessionStore, type Topic } from '../../stores/session';
 
 	let isLoading = false;
 	let errorMessage = '';
@@ -20,8 +20,24 @@
 			if (token) {
 				localStorage.setItem('token', token);
 
-				const pToken = JSON.parse(atob(token.split('.')[1]));
-				sessionStore.update((s) => ({ ...s, user: pToken }));
+				let pToken = JSON.parse(atob(token.split('.')[1]));
+
+				if (!pToken?.subscribedTopics || pToken.subscribedTopics.length === 0) {
+					pToken = {
+						...pToken,
+						subscribedTopics: ['r/ProgrammerHumor', 'r/aww', 'r/AskReddit']
+					};
+				}
+
+				localStorage.setItem('session', JSON.stringify(pToken));
+
+				sessionStore.update((s) => ({
+					...s,
+					user: pToken,
+					topics: pToken.subscribedTopics.map(
+						(t: string) => ({ from: 'reddit', name: t, selected: true }) as Topic
+					)
+				}));
 
 				return goto('/');
 			} else {

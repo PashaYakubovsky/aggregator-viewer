@@ -1,15 +1,12 @@
 <script lang="ts">
-	import { goto, invalidate, pushState } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import Button from '$lib/common/Button.svelte';
 	import { register } from '$lib/login';
 	import { fade } from 'svelte/transition';
-	import { sessionStore } from '../../stores/session';
+	import { sessionStore, type Topic } from '../../stores/session';
 
 	let isLoading = false;
 	let errorMessage = '';
-
-	/** @type {import('./$types').ActionData} */
-	export let form;
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
@@ -27,8 +24,24 @@
 		if (token) {
 			localStorage.setItem('token', token);
 
-			const pToken = JSON.parse(atob(token.split('.')[1]));
-			sessionStore.update((s) => ({ ...s, user: pToken }));
+			let pToken = JSON.parse(atob(token.split('.')[1]));
+
+			if (!pToken?.subscribedTopics || pToken.subscribedTopics.length === 0) {
+				pToken = {
+					...pToken,
+					subscribedTopics: ['r/ProgrammerHumor', 'r/aww', 'r/AskReddit']
+				};
+			}
+
+			localStorage.setItem('session', JSON.stringify(pToken));
+
+			sessionStore.update((s) => ({
+				...s,
+				user: pToken,
+				topics: pToken.subscribedTopics.map(
+					(t: string) => ({ from: 'reddit', name: t, selected: true }) as Topic
+				)
+			}));
 
 			await invalidate('/');
 			await goto('/');

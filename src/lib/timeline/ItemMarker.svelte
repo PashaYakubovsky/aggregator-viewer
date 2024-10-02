@@ -7,6 +7,7 @@
 	export let handleMouseMove: (e: MouseEvent, aggr: Aggregation) => void;
 	export let handleClick: (e: MouseEvent, aggr: Aggregation) => void;
 	export let handleMouseOut: (e: MouseEvent, aggr: Aggregation) => void;
+	export let isSelected: boolean;
 	let markerEl: HTMLButtonElement;
 
 	const getColorFromString = (str: string) => {
@@ -35,7 +36,7 @@
 	}}
 	title={dayjs(aggr.createdAtTime * 1000).format('YYYY MMM DD HH:mm:ss')}
 	bind:this={markerEl}
-	class="marker-inner"
+	class="marker-inner {isSelected ? 'bg-white' : ''}"
 ></button>
 
 <style>

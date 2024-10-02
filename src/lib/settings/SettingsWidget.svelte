@@ -10,12 +10,12 @@
 	let settingsOpen = false;
 
 	$: if (user?.subscribedTopics) {
-		$sessionStore.topics =
-			user.subscribedTopics?.map((topic) => ({
-				from: 'reddit',
-				name: topic,
-				selected: true
-			})) || [];
+		console.log('subscribed topics:', user.subscribedTopics);
+		$sessionStore.topics = user.subscribedTopics?.map((topic) => ({
+			from: 'reddit',
+			name: topic,
+			selected: true
+		}));
 	}
 
 	let hoveredStalker: HTMLDivElement;

@@ -27,7 +27,7 @@
 
 				// parse token and check exp date
 				try {
-					const pToken = JSON.parse(atob(token.split('.')[1]));
+					let pToken = JSON.parse(atob(token.split('.')[1]));
 					const time = Date.now();
 
 					console.log('Token expires at:', new Date(pToken.exp * 1000));
@@ -35,6 +35,12 @@
 					tokenStore.set(token);
 					sessionStore.update((s) => ({ ...s, user: pToken }));
 
+					if (!pToken?.subscribedTopics || pToken.subscribedTopics.length === 0) {
+						pToken = {
+							...pToken,
+							subscribedTopics: ['r/ProgrammerHumor', 'r/aww', 'r/AskReddit']
+						};
+					}
 					localStorage.setItem('session', JSON.stringify(pToken));
 
 					if (time >= pToken.exp * 1000 && isNotLoginPage) {
